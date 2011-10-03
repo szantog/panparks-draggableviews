@@ -388,7 +388,7 @@ function _draggableviews_rebuild_hierarchy(&$info) {
   // We backup the page settings and restore them after completing all operations.
   $pager = $info['view']->query->pager;
 
-  if (isset($pager->options['items_per_page']) && $pager->options['items_per_page'] > 0) {
+  if ($info['view']->use_pager()) {
     // We have to make sure that there's no hidden node with an order value that refers to the current page.
     // If the items to display per page are limitated we load the entire view.
     //@todo: We reduce the fields to a minimum because of performance issues.
@@ -995,22 +995,24 @@ function _draggableviews_reload_info(&$info, $items_per_page = NULL, $current_pa
  * @param $offset
  */
 function _draggableviews_re_execute_view(&$view, $items_per_page = NULL, $current_page = NULL, $offset = NULL) {
-  if (isset($items_per_page)) {
-    $view->query->pager->options['items_per_page'] = $items_per_page;
-  }
-  if (isset($current_page)) {
-    $view->query->pager->current_page = $current_page;
-    // Views pager uses global variables where all already known information is dumped in.
+  if ($view->use_pager()) {
+    if (isset($items_per_page)) {
+      $view->query->pager->options['items_per_page'] = $items_per_page;
+    }
+    if (isset($current_page)) {
+      $view->query->pager->current_page = $current_page;
+      // Views pager uses global variables where all already known information is dumped in.
 
-    // We need to change the global variable $pager_page_array in order to set the page to 0 because
+      // We need to change the global variable $pager_page_array in order to set the page to 0 because
 
-    // this variable would force the current page to another value. (see views/includes/view.inc:#717, function execute())
+      // this variable would force the current page to another value. (see views/includes/view.inc:#717, function execute())
 
-    global $pager_page_array;
-    $pager_page_array[$view->query->pager->options['id']] = $current_page;
-  }
-  if (isset($offset)) {
-    $view->query->pager->options['offset'] = $offset;
+      global $pager_page_array;
+      $pager_page_array[$view->query->pager->options['id']] = $current_page;
+    }
+    if (isset($offset)) {
+      $view->query->pager->options['offset'] = $offset;
+    }
   }
 
   $view->executed = FALSE;
