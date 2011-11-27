@@ -484,6 +484,9 @@ function draggableviews_view_draggabletable_form_submit($form, &$form_state) {
     }
   }
 
+  // Trigger the event "A view has been sorted"
+  rules_invoke_event('draggableviews_rules_event_sorted', $view->name);
+
   // Redirect form.
   $get = $_GET;
   unset($get['q']);
