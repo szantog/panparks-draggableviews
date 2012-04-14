@@ -258,7 +258,7 @@ function draggableviews_views_pre_execute(&$view) {
   $info['pager'] = $info['view']->query->pager;
   $info['globals'] = array();
 
-  if ($info['needs_pager_modifications']) {
+  if ($view->use_pager()) {
     // Paging is beeing used. We modify some paging settings before the view gets executed.
 
 
@@ -398,7 +398,8 @@ function draggableviews_views_pre_render(&$view) {
     }
   }
 
-  if ($info['needs_pager_modifications']) {
+
+  if ($view->use_pager()) {
     global $pager_page_array, $pager_total, $pager_total_items;
     // The global $pager_total variable was calculated with wrong values because we changed the
 
